@@ -31,6 +31,18 @@ type SnowstormState interface {
 	PutLastAccepted(database.Database, ids.ID) error
 }
 
+// Config defines all of the parameters necessary to initialize State
+type Config struct {
+	// Cache configuration:
+	DecidedCacheSize, MissingCacheSize, UnverifiedCacheSize, BytesToIDCacheSize int
+
+	LastAcceptedBlock  avalanche.Vertex
+	GetBlock           func(ids.ID) (avalanche.Vertex, error)
+	UnmarshalBlock     func([]byte) (avalanche.Vertex, error)
+	BuildBlock         func() (avalanche.Vertex, error)
+	GetBlockIDAtHeight func(uint64) (ids.ID, error)
+}
+
 // implements SnowstormState
 type snowstormState struct {
 	state.State
