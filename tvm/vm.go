@@ -1,30 +1,30 @@
+/*
+	- Timestampvm - https://github.com/ava-labs/timestampvm/blob/main/timestampvm/vm.go
+*/
 package tvm
 
 import (
-  "fmt"
-  "time"
-  "errors"
-
-  "github.com/ava-labs/avalanchego/codec"
-	"github.com/ava-labs/avalanchego/codec/linearcodec"
-	"github.com/ava-labs/avalanchego/database/manager"
-	"github.com/ava-labs/avalanchego/ids"
-	"github.com/ava-labs/avalanchego/snow"
-	"github.com/ava-labs/avalanchego/snow/consensus/snowstorm"
-	"github.com/ava-labs/avalanchego/snow/engine/common"
+	"errors"
+	"github.com/smartpassnft/tvm/components"
 	"github.com/ava-labs/avalanchego/snow/engine/snowman/block"
-	cjson "github.com/ava-labs/avalanchego/utils/json"
 	"github.com/ava-labs/avalanchego/version"
-	"github.com/ava-labs/avalanchego/vms/components/core"
 )
 
-/* 
-DAG Reference 
-- https://github.com/ava-labs/avalanchego/blob/v1.4.10/snow/engine/avalanche/vertex/vm.go
-*/
-type TVM struct {
-  common.VM
-  PendingTxs() []snowstorm.Tx
-  ParseTx(tx []byte) (snowstorm.Tx, error)
-  GetTx(ids.ID) (snowstorm.Tx, error)
+const (
+	dataLen      = 32
+	codecVersion = 0
+	name         = "ticketvm"
+)
+
+var (
+	errNoPendingBlocks               = errors.New("no block to propose")
+	errBadGenesisBytes               = errors.New("genesis data should be bytes (max length 32)")
+	Version                          = version.NewDefaultVersion(1, 0, 0)
+	_, block.ChainVM = &VM{}
+)
+
+type VM struct {
+	components.SnowstormVM
+	codec codec.Manager
+	mempool [][dataLen]byte
 }
