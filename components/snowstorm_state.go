@@ -10,7 +10,7 @@ import (
 
 	"github.com/ava-labs/avalanchego/database"
 	"github.com/ava-labs/avalanchego/ids"
-	"github.com/ava-labs/avalanchego/snow/consensus/snowman"
+	"github.com/ava-labs/avalanchego/snow/consensus/avalanche"
 	"github.com/ava-labs/avalanchego/vms/components/state"
 )
 
@@ -25,8 +25,8 @@ var lastAcceptedID = ids.ID{'l', 'a', 's', 't'}
 // state in a snowman vm
 type SnowstormState interface {
 	state.State
-	GetBlock(database.Database, ids.ID) (snowman.Block, error)
-	PutBlock(database.Database, snowman.Block) error
+	GetBlock(database.Database, ids.ID) (avalanche.Vertex, error)
+	PutBlock(database.Database, avalanche.Vertex) error
 	GetLastAccepted(database.Database) (ids.ID, error)
 	PutLastAccepted(database.Database, ids.ID) error
 }
@@ -37,20 +37,20 @@ type snowstormState struct {
 }
 
 // GetBlock gets the block with ID [ID] from [db]
-func (s *snowstormState) GetBlock(db database.Database, id ids.ID) (snowman.Block, error) {
+func (s *snowstormState) GetBlock(db database.Database, id ids.ID) (avalanche.Vertex, error) {
 	blockInterface, err := s.Get(db, state.BlockTypeID, id)
 	if err != nil {
 		return nil, err
 	}
 
-	if block, ok := blockInterface.(snowman.Block); ok {
+	if block, ok := blockInterface.(avalanche.Vertex); ok {
 		return block, nil
 	}
 	return nil, errWrongType
 }
 
 // PutBlock puts [block] in [db]
-func (s *snowstormState) PutBlock(db database.Database, block snowman.Block) error {
+func (s *snowstormState) PutBlock(db database.Database, block avalanche.Vertex) error {
 	return s.Put(db, state.BlockTypeID, block.ID(), block)
 }
 
@@ -69,7 +69,7 @@ func (s *snowstormState) PutLastAccepted(db database.Database, lastAccepted ids.
 }
 
 // NewSnowStormState returns a new SnowstormState
-func NewSnowStormState(unmarshalBlockFunc func([]byte) (snowman.Block, error)) (SnowstormState, error) {
+func NewSnowStormState(unmarshalBlockFunc func([]byte) (avalanche.Vertex, error)) (SnowstormState, error) {
 	rawState, err := state.NewState()
 	if err != nil {
 		return nil, fmt.Errorf("error creating new state: %w", err)
@@ -78,7 +78,7 @@ func NewSnowStormState(unmarshalBlockFunc func([]byte) (snowman.Block, error)) (
 	return snowstormState, rawState.RegisterType(
 		state.BlockTypeID,
 		func(b interface{}) ([]byte, error) {
-			if block, ok := b.(snowman.Block); ok {
+			if block, ok := b.(avalanche.Vertex); ok {
 				return block.Bytes(), nil
 			}
 			return nil, errors.New("expected snowman.Block but got unexpected type")

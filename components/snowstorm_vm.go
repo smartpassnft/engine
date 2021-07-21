@@ -7,10 +7,6 @@ package components
 import (
 	"errors"
 
-	"github.com/gorilla/rpc/v2"
-
-	"github.com/smartpassnft/components"
-
 	"github.com/ava-labs/avalanchego/database"
 	"github.com/ava-labs/avalanchego/database/versiondb"
 	"github.com/ava-labs/avalanchego/ids"
@@ -20,6 +16,7 @@ import (
 	"github.com/ava-labs/avalanchego/snow/engine/common"
 	"github.com/ava-labs/avalanchego/utils/json"
 	"github.com/ava-labs/avalanchego/vms/components/state"
+	"github.com/gorilla/rpc/v2"
 )
 
 var errBadData = errors.New("got unexpected value from database")
@@ -161,7 +158,7 @@ func (svm *SnowstormVM) Initialize(
 	svm.DB = versiondb.New(db)
 
 	var err error
-	svm.State, err = components.NewSnowstormState(unmarshalBlockFunc)
+	svm.State, err = NewSnowStormState(unmarshalBlockFunc)
 	if err != nil {
 		return err
 	}
