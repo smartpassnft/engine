@@ -1,8 +1,5 @@
-# tvm (Ticket VM)
-
-A Custom avalanche VM created to further enable x-chain non-fungible tickets, with extended utility.
-
-## Contributing
+# Ticket VM
+An experimental project that aims to provide a decentralized way to verify ticket possession, creation, and distribution using the avalanche blockchain.
 
 ## References
 - [Creating an avalanche virtual machine](https://docs.avax.network/build/tutorials/platform/create-a-virtual-machine-vm#introduction)

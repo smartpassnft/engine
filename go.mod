@@ -1,8 +1,3 @@
-module github.com/smartpassnft/tvm
+module github.com/smartpassnft/engine
 
-go 1.16
-
-require (
-	github.com/ava-labs/avalanchego v1.4.10
-	github.com/gorilla/rpc v1.2.0
-)
+go 1.19
