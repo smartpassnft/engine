@@ -1,4 +1,3 @@
-# Ticket VM
 An experimental project that aims to provide a decentralized way to verify ticket possession, creation, and distribution using the avalanche blockchain.
 
 ## References
